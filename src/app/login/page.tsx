@@ -1,6 +1,9 @@
 import Btn from "@/components/Btn";
 import React from "react";
 
+// TODO フォントださい
+// firebase authでログイン
+// ログイン後に / に遷移
 function page() {
   return (
     <div className="m-20">

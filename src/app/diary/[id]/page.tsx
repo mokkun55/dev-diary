@@ -16,6 +16,9 @@ function Page({ params }: Props) {
   const diaryId = params.id;
   console.log(diaryId);
 
+  // TODO diaryIdを取ってきて、その日記を参照し emoji タイトル 内容 を表示する
+  // 編集機能???
+
   return (
     <div>
       <Header />

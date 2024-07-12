@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import EmojiPicker, { Emoji, EmojiClickData } from "emoji-picker-react";
 import Btn from "./Btn";
 
+// TODO firebaseにデータ{title, emoji, diary, createdAt}の送信
+
 function InputArea() {
   const [emoji, setEmoji] = useState<string>("📝");
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
@@ -24,9 +26,9 @@ function InputArea() {
   };
 
   return (
-    <div className="bg-green-50 w-full p-2">
+    <div className="w-full p-2">
       <div>
-        <h1 className="text-3xl font-bold mb-4 text-center">
+        <h1 className="text-3xl font-bold mb-4 mt-2 text-center">
           今日の日記を書く✎
         </h1>
         <div>
@@ -63,12 +65,14 @@ function InputArea() {
           onChange={(e) => setInputText(e.target.value)}
           value={inputText}
         ></textarea>
-        <Btn
-          className="bg-blue-500 hover:bg-blue-700 text-2xl"
-          onClick={saveClick}
-        >
-          保存
-        </Btn>
+        <div className="flex justify-end">
+          <Btn
+            className="bg-blue-500 hover:bg-blue-700 text-2xl w-[100px]"
+            onClick={saveClick}
+          >
+            保存
+          </Btn>
+        </div>
       </div>
     </div>
   );
