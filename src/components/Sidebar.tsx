@@ -1,19 +1,48 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import Btn from "./Btn";
+import { auth, db } from "@/firebase";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import Diary from "./types";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-// TODO レスポンシブ対応
-// 画面半分ぐらいのところで 日付と一覧を立て並べに
 function Sidebar() {
+  const [diarys, setDiarys] = useState<Diary[]>([]);
+  const [user] = useAuthState(auth);
   const router = useRouter();
-  const diaryId = "1fjdsaew4321";
 
   // 日付取得 dayjs
   dayjs.locale("ja");
+
+  // データ読み込み
+  useEffect(() => {
+    const userId = auth.currentUser?.uid;
+
+    const getDiaryData = async () => {
+      const diaryDataRef = collection(db, `users/${userId}/diarys`);
+      onSnapshot(
+        query(diaryDataRef, orderBy("createdAt", "desc")),
+        (snapshot) => {
+          // console.log(snapshot.docs);
+          setDiarys(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              emoji: doc.data().emoji,
+              title: doc.data().title,
+              diary: doc.data().diary,
+              createdAt: doc.data().createdAt.toDate(),
+            }))
+          );
+        }
+      );
+    };
+
+    getDiaryData();
+  }, [user]);
 
   return (
     <div className="bg-blue-50 w-1/3 p-4">
@@ -47,17 +76,23 @@ function Sidebar() {
           </Btn>
         </div>
         <ul className="overflow-auto h-[calc(100vh-210px)]">
-          <li
-            className="block lg:flex my-2 border-b pb-2 cursor-pointer"
-            onClick={() => {
-              router.push(`/diary/${diaryId}`);
-            }}
-          >
-            <p className="font-bold">7/11</p>
-            <p>
-              <span className="lg:ml-4">😀</span>React.jsを学んだ
-            </p>
-          </li>
+          {diarys.map((diary, index) => (
+            <li
+              key={index}
+              className="block lg:flex my-2 border-b pb-2 cursor-pointer"
+              onClick={() => {
+                router.push(`/diary/${diary.id}`);
+              }}
+            >
+              <p className="font-bold">
+                {dayjs(diary.createdAt).format("MM/DD")}
+              </p>
+              <p>
+                <span className="lg:ml-4">{diary.emoji}</span>
+                {diary.title}
+              </p>
+            </li>
+          ))}
         </ul>
       </div>
     </div>

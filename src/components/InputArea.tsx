@@ -7,7 +7,7 @@ import { auth, db } from "@/firebase";
 import { doc, collection, addDoc } from "firebase/firestore";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import {Toaster, toast} from "react-hot-toast"
+import { Toaster, toast } from "react-hot-toast";
 
 // TODO firebaseにデータ{title, emoji, diary, createdAt}の送信
 
@@ -45,7 +45,7 @@ function InputArea() {
     console.log("タイトル: ", diaryTitle);
     console.log("本文: ", inputText);
 
-    // TODO firebaseにデータ{title, emoji, diary, createdAt}の送信
+    // firebaseにデータ{title, emoji, diary, createdAt}の送信
     const userDocRef = doc(db, "users", userId);
 
     const diarysCollectionRef = collection(userDocRef, "diarys");
@@ -57,7 +57,7 @@ function InputArea() {
       createdAt: new Date(),
     });
 
-    
+    // 完了時の処理
     toast.success("保存しました");
     setInputTitle("");
     setInputText("");
@@ -65,7 +65,7 @@ function InputArea() {
 
   return (
     <div className="w-full p-2">
-      <Toaster position="top-center"/>
+      <Toaster position="top-center" />
       <div>
         <h1 className="text-3xl font-bold mb-4 mt-2 text-center">
           今日の日記を書く✎

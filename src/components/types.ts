@@ -6,6 +6,7 @@ type Diary = {
   title: string;
   diary: string;
   createdAt: Date;
+  id: string;
 };
 
 export default Diary;
