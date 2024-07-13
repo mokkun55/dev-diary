@@ -8,8 +8,6 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // TODO フォントださい
-// firebase authでログイン
-// ログイン後に / に遷移
 function Page() {
   const router = useRouter();
 
