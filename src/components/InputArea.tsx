@@ -3,10 +3,17 @@
 import React, { useState } from "react";
 import EmojiPicker, { Emoji, EmojiClickData } from "emoji-picker-react";
 import Btn from "./Btn";
+import { auth, db } from "@/firebase";
+import { doc, collection, addDoc } from "firebase/firestore";
+import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
+import {Toaster, toast} from "react-hot-toast"
 
 // TODO firebaseにデータ{title, emoji, diary, createdAt}の送信
 
 function InputArea() {
+  const router = useRouter();
+
   const [emoji, setEmoji] = useState<string>("📝");
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
 
@@ -19,14 +26,46 @@ function InputArea() {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
+  // auth
+  const userId = auth.currentUser?.uid;
+
   // 保存
-  const saveClick = () => {
-    console.log("タイトル: ", inputTitle);
+  const saveClick = async () => {
+    let diaryTitle = inputTitle;
+    if (!inputTitle) {
+      diaryTitle = dayjs().format("MM/DD") + "の日記";
+    }
+
+    if (!userId) {
+      alert("ユーザーIDが取得できませんでした \nログインしてください");
+      console.error("ユーザーIDが取得できませんでした");
+      router.push("/login");
+      return;
+    }
+    console.log("タイトル: ", diaryTitle);
     console.log("本文: ", inputText);
+
+    // TODO firebaseにデータ{title, emoji, diary, createdAt}の送信
+    const userDocRef = doc(db, "users", userId);
+
+    const diarysCollectionRef = collection(userDocRef, "diarys");
+
+    await addDoc(diarysCollectionRef, {
+      title: diaryTitle,
+      emoji: emoji,
+      diary: inputText,
+      createdAt: new Date(),
+    });
+
+    
+    toast.success("保存しました");
+    setInputTitle("");
+    setInputText("");
   };
 
   return (
     <div className="w-full p-2">
+      <Toaster position="top-center"/>
       <div>
         <h1 className="text-3xl font-bold mb-4 mt-2 text-center">
           今日の日記を書く✎

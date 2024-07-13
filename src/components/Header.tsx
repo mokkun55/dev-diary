@@ -19,6 +19,9 @@ function Header() {
   // TODO 仮置き
   const router = useRouter();
 
+  const userIcon = user?.photoURL ?? "/imgs/userIcon.png";
+  const userName = user ? user.displayName : "名前";
+
   return (
     <header className="bg-gray-50 p-2 flex items-center justify-between h-[80px]">
       <Link href={"/"}>
@@ -27,8 +30,9 @@ function Header() {
 
       <div className="flex items-center flex-col">
         {/* プロフ画像 */}
+
         <Image
-          src={user?.photoURL}
+          src={userIcon}
           width={500}
           height={500}
           alt="プロフ画像"
@@ -38,7 +42,7 @@ function Header() {
           }}
         />
         {/* displayName */}
-        <p className=" text-[8px]">{user?.displayName}</p>
+        <p className=" text-[8px]">{userName}</p>
       </div>
     </header>
   );
