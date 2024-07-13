@@ -1,14 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
-import Btn from "./Btn";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Diary from "./types";
+import { auth, db } from "@/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function Header() {
+  // firebaseからデータを取得
+  const [user] = useAuthState(auth);
+
+  useEffect(() => {
+    // TODO データ取得
+  }, []);
+
   // TODO 仮置き
-  const user = true;
   const router = useRouter();
 
   return (
@@ -20,7 +28,7 @@ function Header() {
       <div className="flex items-center flex-col">
         {/* プロフ画像 */}
         <Image
-          src="/imgs/profIcon.jpg"
+          src={user?.photoURL}
           width={500}
           height={500}
           alt="プロフ画像"
@@ -30,7 +38,7 @@ function Header() {
           }}
         />
         {/* displayName */}
-        <p className=" text-[8px]">もっくん</p>
+        <p className=" text-[8px]">{user?.displayName}</p>
       </div>
     </header>
   );

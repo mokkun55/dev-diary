@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 function Page() {
   const router = useRouter();
 
+  // ログイン関係
   const [user] = useAuthState(auth);
 
   const loginWithGoogle = () => {
