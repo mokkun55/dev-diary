@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import Btn from "./Btn";
 
+// TODO レスポンシブ対応
+// 画面半分ぐらいのところで 日付と一覧を立て並べに
 function Sidebar() {
   const router = useRouter();
   const diaryId = "1fjdsaew4321";

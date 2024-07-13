@@ -1,10 +1,31 @@
+"use client";
+
 import Btn from "@/components/Btn";
-import React from "react";
+import { auth } from "@/firebase";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 // TODO フォントださい
 // firebase authでログイン
 // ログイン後に / に遷移
-function page() {
+function Page() {
+  const router = useRouter();
+
+  const [user] = useAuthState(auth);
+
+  const loginWithGoogle = () => {
+    const googleProvider = new GoogleAuthProvider();
+    signInWithPopup(auth, googleProvider);
+    if (user) {
+      router.push("/");
+    }
+  };
+
+  const clickSignout = () => {
+    signOut(auth);
+  };
   return (
     <div className="m-20">
       <h1 className="text-5xl text-center">Dev Diary📝</h1>
@@ -14,15 +35,39 @@ function page() {
       </p>
 
       <div className="flex flex-col items-center w-full p-4">
-        <p className="text-2xl">ログインして始める</p>
-        <Btn className="bg-blue-500 hover:bg-blue-700 text-lg mt-4">
-          Googleでログイン
-        </Btn>
+        {user ? (
+          <>
+            <Btn
+              className="text-2xl bg-blue-500 hover:bg-blue-red mt-4 w-[250px] h-[70px]"
+              onClick={() => router.push("/")}
+            >
+              日記を書く✎
+            </Btn>
+            <Btn
+              className="text-2xl bg-red-500 hover:bg-blue-red mt-4 w-[230px] h-[50px]"
+              onClick={clickSignout}
+            >
+              サインアウト
+            </Btn>
+          </>
+        ) : (
+          <>
+            <p className="text-2xl">ログインして始める</p>
+            <Btn
+              className="text-2xl bg-blue-500 hover:bg-blue-700 mt-4 w-[250px] h-[70px]"
+              onClick={loginWithGoogle}
+            >
+              Googleでログイン
+            </Btn>
+          </>
+        )}
       </div>
 
-      <div>ここにアプリプレビュー or 使い方ガイド</div>
+      <div className="flex justify-center items-center">
+        ここにアプリプレビュー or 使い方ガイド
+      </div>
     </div>
   );
 }
 
-export default page;
+export default Page;
