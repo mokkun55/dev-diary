@@ -66,6 +66,7 @@ function InputArea() {
     toast.success("保存しました");
     setInputTitle("");
     setInputText("");
+    setEmoji("📝");
   };
 
   return (

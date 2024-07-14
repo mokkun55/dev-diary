@@ -9,6 +9,8 @@ function page() {
       <Header />
       <div className="flex h-[calc(100vh-80px)]">
         <Sidebar />
+        {/* TODO 今日の日記を書いている場合 今日の日記を表示する */}
+        {/* きほん1日1日記 */}
         <InputArea />
       </div>
     </>
