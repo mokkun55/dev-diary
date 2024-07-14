@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import EmojiPicker, { Emoji, EmojiClickData } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import Btn from "./Btn";
 import { auth, db } from "@/firebase";
 import { doc, collection, addDoc } from "firebase/firestore";
@@ -31,6 +31,11 @@ function InputArea() {
 
   // 保存
   const saveClick = async () => {
+    if (inputText === "") {
+      toast.error("本文が入力されていません");
+      return;
+    }
+
     let diaryTitle = inputTitle;
     if (!inputTitle) {
       diaryTitle = dayjs().format("MM/DD") + "の日記";
@@ -42,8 +47,8 @@ function InputArea() {
       router.push("/login");
       return;
     }
-    console.log("タイトル: ", diaryTitle);
-    console.log("本文: ", inputText);
+    // console.log("タイトル: ", diaryTitle);
+    // console.log("本文: ", inputText);
 
     // firebaseにデータ{title, emoji, diary, createdAt}の送信
     const userDocRef = doc(db, "users", userId);
@@ -71,42 +76,39 @@ function InputArea() {
           今日の日記を書く✎
         </h1>
         <div>
-          <div className="flex">
+          <div className="flex items-start">
             <button
-              className="text-4xl mr-2"
+              className="text-[80px] mr-2"
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             >
               {emoji}
             </button>
-            <input
-              type="text"
-              placeholder="タイトル"
-              className="p-2 border rounded w-full text-2xl"
-              onChange={(e) => setInputTitle(e.target.value)}
-              value={inputTitle}
-            />
+            {/* 絵文字ピッカー */}
+            {showEmojiPicker ? (
+              <EmojiPicker onEmojiClick={emojiClick} skinTonesDisabled />
+            ) : (
+              ""
+            )}
           </div>
-          {/* 絵文字ピッカー */}
-          {showEmojiPicker ? (
-            <EmojiPicker
-              onEmojiClick={emojiClick}
-              skinTonesDisabled
-              searchDisabled
-            />
-          ) : (
-            ""
-          )}
+          <input
+            type="text"
+            placeholder="タイトル"
+            className="p-2 border rounded w-full text-2xl"
+            onChange={(e) => setInputTitle(e.target.value)}
+            value={inputTitle}
+          />
         </div>
+
         <textarea
           placeholder="本文"
           required
-          className="resize-none w-full p-2 border rounded mt-2 text-2xl h-[calc(100vh-350px)]"
+          className="resize-none w-full p-2 border rounded mt-2 text-2xl h-[calc(100vh-450px)]"
           onChange={(e) => setInputText(e.target.value)}
           value={inputText}
         ></textarea>
         <div className="flex justify-end">
           <Btn
-            className="bg-blue-500 hover:bg-blue-700 text-2xl w-[100px]"
+            className="bg-blue-500 hover:bg-blue-700 text-2xl w-[100px] h-[50px]"
             onClick={saveClick}
           >
             保存

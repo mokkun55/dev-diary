@@ -14,11 +14,13 @@ function Page() {
   // ログイン関係
   const [user] = useAuthState(auth);
 
-  const loginWithGoogle = () => {
-    const googleProvider = new GoogleAuthProvider();
-    signInWithPopup(auth, googleProvider);
-    if (user) {
+  const loginWithGoogle = async () => {
+    try {
+      const googleProvider = new GoogleAuthProvider();
+      await signInWithPopup(auth, googleProvider);
       router.push("/");
+    } catch (error) {
+      console.error(error);
     }
   };
 
