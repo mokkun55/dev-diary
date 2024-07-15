@@ -66,6 +66,7 @@ function InputArea() {
     toast.success("保存しました");
     setInputText("");
     setEmoji("📝");
+    setInputTitle("");
   };
 
   return (
@@ -78,18 +79,24 @@ function InputArea() {
         <div>
           <div className="flex items-center justify-end">
             <Btn
-              className="bg-green-500 hover:bg-green-700 text-xl w-[120px] h-[40px] mt-2"
+              className="bg-green-500 hover:bg-green-700 text-xl w-[120px] h-[40px]"
               onClick={() => setIsEdit(!isEdit)}
             >
               {isEdit ? "プレビュー" : "編集"}
             </Btn>
             <Btn
-              className="bg-gray-300 hover:bg-gray-700 text-gray-500 text-xl mt-2"
+              className="bg-gray-300 hover:bg-gray-700 text-gray-500 text-xl h-[40px] w-[40px] ml-1"
               onClick={() => {
                 router.push("/help/md");
               }}
             >
               ?
+            </Btn>
+            <Btn
+              className="bg-blue-500 hover:bg-blue-700 text-xl ml-4 w-[120px] h-[40px]"
+              onClick={saveClick}
+            >
+              保存
             </Btn>
           </div>
           <div className="flex items-start">
@@ -133,14 +140,7 @@ function InputArea() {
           </div>
         )}
 
-        <div className="flex justify-end">
-          <Btn
-            className="bg-blue-500 hover:bg-blue-700 text-2xl w-[100px] h-[50px]"
-            onClick={saveClick}
-          >
-            保存
-          </Btn>
-        </div>
+        <div className="flex justify-end"></div>
       </div>
     </div>
   );

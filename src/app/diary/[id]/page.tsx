@@ -66,19 +66,22 @@ function Page({ params }: Props) {
     <div>
       <Header />
       <div className="flex h-[calc(100vh-80px)]">
-        <Sidebar />
         <div className="w-full">
+          <Btn
+            className="bg-gray-500 hover:bg-gray-700 text-xl m-4"
+            onClick={() => setEdit(!edit)}
+          >
+            {edit ? "保存して閉じる" : "編集"}
+          </Btn>
+          <p className="text-center text-[80px]">{emoji}</p>
+          <h1 className="text-3xl font-bold text-center ">{title}</h1>
           <p className="text-xl text-center">
             {dayjs(date).format("YYYY/MM/DD (dddd)")}
           </p>
-          <h1 className="text-3xl font-bold text-center m-4 mt-0">
-            <span>{emoji}</span>
-            {title}
-          </h1>
           <div className="m-6">
             {edit ? (
               <textarea
-                className="text-xl resize-none p-2 w-full border h-[calc(100vh-300px)]"
+                className="text-xl resize-none p-2 w-full border h-[calc(100vh-400px)]"
                 value={diary}
               ></textarea>
             ) : (
@@ -87,14 +90,7 @@ function Page({ params }: Props) {
               </div>
             )}
 
-            <div className="flex justify-end">
-              <Btn
-                className="bg-green-500 hover:bg-green-700 text-2xl w-[100px] h-[50px]"
-                onClick={() => setEdit(!edit)}
-              >
-                編集
-              </Btn>
-            </div>
+            <div className="flex justify-end"></div>
           </div>
         </div>
       </div>
