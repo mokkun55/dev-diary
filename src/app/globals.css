@@ -1,8 +1,62 @@
 /* フォント */
 /* M PLUS rounded */
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap");
 
 /* tailwindおまじない */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* markdownのスタイルを変更 */
+
+.markdown .title {
+  @apply text-3xl font-bold text-center border-b-2 border-black p-2;
+}
+
+.markdown h1 {
+  @apply text-3xl font-bold mb-4;
+}
+
+.markdown h2 {
+  @apply text-2xl font-bold mb-2;
+}
+
+.markdown h3 {
+  @apply text-xl font-bold mb-2;
+}
+
+.markdown p {
+  @apply text-lg leading-7 my-4;
+}
+
+.markdown ul {
+  @apply list-disc pl-6 my-4;
+}
+
+.markdown ol {
+  @apply list-decimal pl-6 my-4;
+}
+
+.markdown li {
+  @apply mb-2;
+}
+
+.markdown a {
+  @apply text-blue-500 underline;
+}
+
+.markdown code {
+  @apply bg-gray-200 px-1 py-0.5 rounded;
+}
+
+.markdown pre {
+  @apply bg-gray-200 p-4 rounded;
+}
+
+.markdown blockquote {
+  @apply border-l-4 border-gray-400 italic pl-4 my-4;
+}
+
+.markdown img {
+  @apply mx-auto my-4 w-[500px];
+}

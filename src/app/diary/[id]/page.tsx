@@ -4,19 +4,12 @@ import Btn from "@/components/Btn";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { auth, db } from "@/firebase";
-import {
-  collection,
-  doc,
-  limit,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import Diary from "@/components/types";
 import { useAuthState } from "react-firebase-hooks/auth";
 import dayjs from "dayjs";
+import ReactMarkdown from "react-markdown";
 
 type Props = {
   params: {
@@ -30,6 +23,7 @@ function Page({ params }: Props) {
   const [diary, setDiary] = useState<string>("");
   const [emoji, setEmoji] = useState<string>("");
   const [date, setDate] = useState<Date>();
+  const [edit, setEdit] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -82,14 +76,21 @@ function Page({ params }: Props) {
             {title}
           </h1>
           <div className="m-6">
-            <textarea
-              className="text-xl resize-none p-2 w-full border h-[calc(100vh-300px)]"
-              value={diary}
-            ></textarea>
+            {edit ? (
+              <textarea
+                className="text-xl resize-none p-2 w-full border h-[calc(100vh-300px)]"
+                value={diary}
+              ></textarea>
+            ) : (
+              <div className="markdown">
+                <ReactMarkdown>{diary}</ReactMarkdown>
+              </div>
+            )}
+
             <div className="flex justify-end">
               <Btn
                 className="bg-green-500 hover:bg-green-700 text-2xl w-[100px] h-[50px]"
-                onClick={editDiary}
+                onClick={() => setEdit(!edit)}
               >
                 編集
               </Btn>
