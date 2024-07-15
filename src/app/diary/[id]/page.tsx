@@ -6,6 +6,7 @@ import { auth, db } from "@/firebase";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   updateDoc,
@@ -32,32 +33,8 @@ function Page({ params }: Props) {
   const [edit, setEdit] = useState<boolean>(false);
 
   const router = useRouter();
-
   const diaryId = params.id;
   const userId = auth.currentUser?.uid;
-
-  const clickEdit = () => {
-    if (edit) {
-      try {
-        // updatedoc
-        if (!userId || !diaryId) {
-          toast.error("userIdかdiaryIdが取得できませんでした");
-          return;
-        }
-        updateDoc(doc(db, "users", userId, "diarys", diaryId), {
-          title: title,
-          diary: diary,
-        });
-      } catch (error) {
-        console.error("dbエラー " + error);
-        toast.error("db取得エラー");
-      }
-      toast.success("保存しました");
-      setEdit(false);
-    } else {
-      setEdit(true);
-    }
-  };
 
   useEffect(() => {
     const getDiaryData = async () => {
@@ -81,9 +58,52 @@ function Page({ params }: Props) {
     getDiaryData();
   }, [diaryId, router, user, userId]);
 
-  // TODO 編集機能
-  const editDiary = () => {
-    alert("編集機能はまだ実装されていません");
+  // 編集機能
+  const clickEdit = () => {
+    if (edit) {
+      try {
+        // updatedoc
+        if (!userId || !diaryId) {
+          toast.error("userIdかdiaryIdが取得できませんでした");
+          return;
+        }
+        const editDiary = async () => {
+          updateDoc(doc(db, "users", userId, "diarys", diaryId), {
+            title: title,
+            diary: diary,
+          });
+        };
+        editDiary();
+      } catch (error) {
+        console.error("dbエラー " + error);
+        toast.error("db取得エラー");
+      }
+      toast.success("保存しました");
+      setEdit(false);
+    } else {
+      setEdit(true);
+    }
+  };
+
+  // 削除機能
+  const clickDelete = () => {
+    if (!userId || !diaryId) {
+      toast.error("userIdかdiaryIdが取得できませんでした");
+      return;
+    }
+    const deleteDiary = async () => {
+      try {
+        await deleteDoc(doc(db, "users", userId, "diarys", diaryId));
+        toast.success("削除しました");
+        router.push("/");
+      } catch (error) {
+        console.error("dbエラー " + error);
+        toast.error("db取得エラー");
+      }
+    };
+    if (window.confirm("本当に削除してもよろしいですか？")) {
+      deleteDiary();
+    }
   };
 
   return (
@@ -93,10 +113,16 @@ function Page({ params }: Props) {
       <div className="flex h-[calc(100vh-80px)]">
         <div className="w-full">
           <Btn
-            className="bg-gray-500 hover:bg-gray-700 text-xl m-4"
+            className="bg-green-500 hover:bg-green-700 text-xl m-4 mr-0"
             onClick={clickEdit}
           >
             {edit ? "保存して閉じる" : "編集"}
+          </Btn>
+          <Btn
+            className="bg-red-500 hover:bg-red-700 text-xl m-4"
+            onClick={clickDelete}
+          >
+            削除
           </Btn>
           <p className="text-center text-[80px]">{emoji}</p>
           <h1 className="text-3xl font-bold text-center">
