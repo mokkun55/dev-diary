@@ -109,7 +109,7 @@ function InputArea() {
       {isToday ? (
         <div className="flex flex-col justify-center items-center h-[50vh]">
           <h1 className="text-3xl font-bold text-center m-4">
-            今日の日記はすでに記入済みです。
+            今日の日記はすでに記入済みです
             <br /> お疲れ様でした!
           </h1>
           <div className="flex flex-col justify-center">
@@ -123,7 +123,7 @@ function InputArea() {
               className="bg-blue-500 hover:bg-blue-700 h-[50px] text-xl mt-4"
               onClick={() => router.push("/diary")}
             >
-              日記一覧を見る
+              過去の日記を振り返る
             </Btn>
           </div>
         </div>
