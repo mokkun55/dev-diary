@@ -2,7 +2,6 @@
 
 import Btn from "@/components/Btn";
 import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
 import { auth, db } from "@/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/navigation";
