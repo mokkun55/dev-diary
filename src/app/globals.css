@@ -25,8 +25,16 @@
   @apply text-xl font-bold mb-2;
 }
 
+.markdown h4 {
+  @apply text-lg font-bold mb-2;
+}
+
 .markdown p {
   @apply text-lg leading-7 my-4;
+}
+
+.markdown hr {
+  @apply border-t-2 border-gray-300 my-4;
 }
 
 .markdown ul {
@@ -59,4 +67,12 @@
 
 .markdown img {
   @apply mx-auto my-4 w-[500px];
+}
+
+.markdown em {
+  @apply italic text-gray-500;
+}
+
+.markdown table {
+  @apply w-full border-collapse my-4;
 }

@@ -74,7 +74,17 @@ function Page({ params }: Props) {
             {edit ? "保存して閉じる" : "編集"}
           </Btn>
           <p className="text-center text-[80px]">{emoji}</p>
-          <h1 className="text-3xl font-bold text-center ">{title}</h1>
+          <h1 className="text-3xl font-bold text-center">
+            {edit ? (
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="text-center border rounded"
+              ></input>
+            ) : (
+              title
+            )}
+          </h1>
           <p className="text-xl text-center">
             {dayjs(date).format("YYYY/MM/DD (dddd)")}
           </p>
@@ -83,6 +93,7 @@ function Page({ params }: Props) {
               <textarea
                 className="text-xl resize-none p-2 w-full border h-[calc(100vh-400px)]"
                 value={diary}
+                onChange={(e) => setDiary(e.target.value)}
               ></textarea>
             ) : (
               <div className="markdown">

@@ -3,7 +3,7 @@ import InputArea from "@/components/InputArea";
 import Sidebar from "@/components/Sidebar";
 import React from "react";
 
-function page() {
+function Page() {
   return (
     <>
       <Header />
@@ -17,4 +17,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
