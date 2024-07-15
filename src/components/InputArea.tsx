@@ -21,6 +21,7 @@ function InputArea() {
   const [isEdit, setIsEdit] = useState<boolean>(true);
   const [inputTitle, setInputTitle] = useState<string>("");
   const [isToday, setIsToday] = useState<boolean>(false);
+  const [todayDiaryId, setTodayDiaryId] = useState<string>("");
 
   // 絵文字ピッカー
   const emojiClick = (emoji: EmojiClickData) => {
@@ -44,6 +45,8 @@ function InputArea() {
       const todayDiary = docsSnap.docs.filter((doc) => {
         const data = doc.data();
         const createdAt = data.createdAt.toDate();
+        const todayDiaryId = doc.id;
+        setTodayDiaryId(todayDiaryId);
         const formattedDate = dayjs(createdAt).format("YYYY-MM-DD");
         return formattedDate === today;
       });
@@ -54,10 +57,6 @@ function InputArea() {
       } else {
         setIsToday(true);
         console.log("今日の日記は書かれています");
-        const data = todayDiary[0].data();
-        setInputTitle(data.title);
-        setInputText(data.diary);
-        setEmoji(data.emoji);
       }
     } catch (error) {
       toast.error("DBエラーが発生しました");
@@ -67,8 +66,6 @@ function InputArea() {
 
   useEffect(() => {
     getDiary();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // 保存
@@ -100,6 +97,7 @@ function InputArea() {
 
     // 完了時の処理
     toast.success("保存しました");
+    setIsToday(true);
     setInputText("");
     setEmoji("📝");
     setInputTitle("");
@@ -108,78 +106,101 @@ function InputArea() {
   return (
     <div className="w-full p-2">
       <Toaster position="top-center" />
-      <div>
-        <h1 className="text-3xl font-bold mb-4 mt-2 text-center">
-          今日の日記を書く✎
-        </h1>
-        <div className="flex items-center justify-end">
-          <Btn
-            className="bg-green-500 hover:bg-green-700 text-xl w-[120px] h-[40px]"
-            onClick={() => setIsEdit(!isEdit)}
-          >
-            {isEdit ? "プレビュー" : "編集"}
-          </Btn>
-          <Btn
-            className="bg-gray-300 hover:bg-gray-700 text-gray-500 text-xl h-[40px] w-[40px] ml-1"
-            onClick={() => {
-              router.push("/help/md");
-            }}
-          >
-            ?
-          </Btn>
-          <Btn
-            className="bg-blue-500 hover:bg-blue-700 text-xl ml-4 w-[120px] h-[40px]"
-            onClick={saveClick}
-          >
-            保存
-          </Btn>
-        </div>
-
-        {isEdit ? (
-          <>
-            <div className="flex items-start">
-              <button
-                className="text-[80px] mb-[-15px]"
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              >
-                {emoji}
-              </button>
-
-              {/* 絵文字ピッカー */}
-              {showEmojiPicker ? (
-                <EmojiPicker onEmojiClick={emojiClick} skinTonesDisabled />
-              ) : (
-                ""
-              )}
-            </div>
-            <input
-              type="text"
-              placeholder="Title"
-              required
-              className="w-full p-2 border-none rounded mt-2 text-3xl font-bold outline-none"
-              onChange={(e) => setInputTitle(e.target.value)}
-              value={inputTitle}
-            />
-            <textarea
-              placeholder="write in markdown"
-              required
-              className="bg-gray-50 resize-none w-full p-2 border-none outline-none rounded mt-2 text-xl h-[calc(100vh-450px)]"
-              onChange={(e) => setInputText(e.target.value)}
-              value={inputText}
-            ></textarea>
-          </>
-        ) : (
-          <div>
-            <p className="text-center text-[80px]">{emoji}</p>
-            <h1 className="text-3xl font-bold text-center">{inputTitle}</h1>
-            <div className="markdown">
-              <ReactMarkdown>{inputText}</ReactMarkdown>
-            </div>
+      {isToday ? (
+        <div className="flex flex-col justify-center items-center h-[50vh]">
+          <h1 className="text-3xl font-bold text-center m-4">
+            今日の日記はすでに記入済みです。
+            <br /> お疲れ様でした!
+          </h1>
+          <div className="flex flex-col justify-center">
+            <Btn
+              className="bg-green-500 hover:bg-green-700 h-[50px] text-xl"
+              onClick={() => router.push(`/diary/${todayDiaryId}`)}
+            >
+              今日の日記を(編集)見る
+            </Btn>
+            <Btn
+              className="bg-blue-500 hover:bg-blue-700 h-[50px] text-xl mt-4"
+              onClick={() => router.push("/diary")}
+            >
+              日記一覧を見る
+            </Btn>
           </div>
-        )}
+        </div>
+      ) : (
+        <div>
+          <h1 className="text-3xl font-bold mb-4 mt-2 text-center">
+            今日の日記を書く✎
+          </h1>
+          <div className="flex items-center justify-end">
+            <Btn
+              className="bg-green-500 hover:bg-green-700 text-xl w-[120px] h-[40px]"
+              onClick={() => setIsEdit(!isEdit)}
+            >
+              {isEdit ? "プレビュー" : "編集"}
+            </Btn>
+            <Btn
+              className="bg-gray-300 hover:bg-gray-700 text-gray-500 text-xl h-[40px] w-[40px] ml-1"
+              onClick={() => {
+                router.push("/help/md");
+              }}
+            >
+              ?
+            </Btn>
+            <Btn
+              className="bg-blue-500 hover:bg-blue-700 text-xl ml-4 w-[120px] h-[40px]"
+              onClick={saveClick}
+            >
+              保存
+            </Btn>
+          </div>
 
-        <div className="flex justify-end"></div>
-      </div>
+          {isEdit ? (
+            <>
+              <div className="flex items-start">
+                <button
+                  className="text-[80px] mb-[-15px]"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                >
+                  {emoji}
+                </button>
+
+                {/* 絵文字ピッカー */}
+                {showEmojiPicker ? (
+                  <EmojiPicker onEmojiClick={emojiClick} skinTonesDisabled />
+                ) : (
+                  ""
+                )}
+              </div>
+              <input
+                type="text"
+                placeholder="Title"
+                required
+                className="w-full p-2 border-none rounded mt-2 text-3xl font-bold outline-none"
+                onChange={(e) => setInputTitle(e.target.value)}
+                value={inputTitle}
+              />
+              <textarea
+                placeholder="write in markdown"
+                required
+                className="bg-gray-50 resize-none w-full p-2 border-none outline-none rounded mt-2 text-xl h-[calc(100vh-450px)]"
+                onChange={(e) => setInputText(e.target.value)}
+                value={inputText}
+              ></textarea>
+            </>
+          ) : (
+            <div>
+              <p className="text-center text-[80px]">{emoji}</p>
+              <h1 className="text-3xl font-bold text-center">{inputTitle}</h1>
+              <div className="markdown">
+                <ReactMarkdown>{inputText}</ReactMarkdown>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end"></div>
+        </div>
+      )}
     </div>
   );
 }
