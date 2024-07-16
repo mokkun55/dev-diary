@@ -2,31 +2,58 @@
 
 import Header from "@/components/Header";
 import Diary from "@/components/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Btn from "@/components/Btn";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import Link from "next/link";
+import { auth, db } from "@/firebase";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 // 過去の日記を一覧で見れるページ
 // クリックで "diary/[id]" に飛ばす
 function Page() {
   dayjs.locale("ja");
+  const router = useRouter();
+  const [user, loading] = useAuthState(auth);
 
   const [diarys, setDiarys] = useState<Diary[]>([]);
 
-  const router = useRouter();
+  // データ読み込み
+  useEffect(() => {
+    const userId = auth.currentUser?.uid;
+
+    const getDiaryData = async () => {
+      const diaryDataRef = collection(db, `users/${userId}/diarys`);
+      onSnapshot(
+        query(diaryDataRef, orderBy("createdAt", "desc"), limit(10)),
+        (snapshot) => {
+          // console.log(snapshot.docs);
+          setDiarys(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              emoji: doc.data().emoji,
+              title: doc.data().title,
+              diary: doc.data().diary,
+              createdAt: doc.data().createdAt.toDate(),
+            }))
+          );
+        }
+      );
+    };
+
+    getDiaryData();
+  }, [user]);
 
   const changeMonth = (num: number) => {};
-
-  // TODO 仮置き
-  const diaries = [
-    { date: "7/1", title: "Reactjsを勉強した", link: "/diary/hoge" },
-    { date: "7/2", title: "Firebaseの設定を学んだ", link: "/diary/fuga" },
-    { date: "7/3", title: "Next.jsでページ遷移を試した", link: "/diary/foo" },
-    // 追加の日記エントリーをここに書きます
-  ];
 
   return (
     <>
@@ -78,13 +105,13 @@ function Page() {
                 </tr>
               </thead>
               <tbody>
-                {diaries.map((diary, index) => (
+                {diarys.map((diary, index) => (
                   <tr key={index}>
                     <td className="border border-gray-300 px-4 py-2">
-                      {diary.date}
+                      {diary.createdAt.toLocaleDateString()}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      <Link href={diary.link}>{diary.title}</Link>
+                      <Link href={`/diary/${diary.id}`}>{diary.title}</Link>
                     </td>
                   </tr>
                 ))}
